@@ -7,13 +7,16 @@ import {
   GraduationCap,
   Search,
   ChevronLeft,
-  Menu
+  Menu,
+  LogOut
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
+import yolafreshLogo from "@/assets/yolafresh-logo.jpg";
 
 const menuItems = [
   { title: "Dashboard", url: "/", icon: Home },
@@ -31,6 +34,17 @@ interface AppSidebarProps {
 export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
+  const { user, signOut } = useAuth();
+
+  const getUserInitials = () => {
+    const email = user?.email || "";
+    const name = user?.user_metadata?.full_name || email.split("@")[0];
+    return name.split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2);
+  };
+
+  const getUserName = () => {
+    return user?.user_metadata?.full_name || user?.email?.split("@")[0] || "Employee";
+  };
 
   return (
     <>
@@ -58,10 +72,11 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
           {isOpen ? (
             <>
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-                  <GraduationCap className="w-5 h-5 text-primary-foreground" />
-                </div>
-                <span className="font-semibold text-sidebar-foreground">Training Hub</span>
+                <img 
+                  src={yolafreshLogo} 
+                  alt="Yolafresh" 
+                  className="h-8 object-contain"
+                />
               </div>
               <Button 
                 variant="ghost" 
@@ -88,7 +103,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
         {isOpen && (
           <div className="p-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
                 placeholder="Search training..."
                 value={searchQuery}
@@ -108,7 +123,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                   to={item.url}
                   end={item.url === "/"}
                   className={cn(
-                    "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sidebar-foreground hover:bg-sidebar-accent/50 transition-colors",
+                    "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sidebar-foreground hover:bg-sidebar-accent transition-colors",
                     !isOpen && "lg:justify-center lg:px-2"
                   )}
                   activeClassName="bg-primary text-primary-foreground hover:bg-primary"
@@ -124,15 +139,24 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
         {/* Footer */}
         {isOpen && (
           <div className="p-4 border-t border-sidebar-border">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 mb-3">
               <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                <span className="text-sm font-semibold text-primary">JD</span>
+                <span className="text-sm font-semibold text-primary">{getUserInitials()}</span>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-sidebar-foreground truncate">John Doe</p>
-                <p className="text-xs text-muted truncate">Employee</p>
+                <p className="text-sm font-medium text-sidebar-foreground truncate">{getUserName()}</p>
+                <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
               </div>
             </div>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="w-full gap-2"
+              onClick={signOut}
+            >
+              <LogOut className="w-4 h-4" />
+              Sign Out
+            </Button>
           </div>
         )}
       </aside>
