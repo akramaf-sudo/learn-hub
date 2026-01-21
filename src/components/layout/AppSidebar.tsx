@@ -8,7 +8,10 @@ import {
   Search,
   ChevronLeft,
   Menu,
-  LogOut
+  LogOut,
+  Shield,
+  Upload,
+  Users
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
@@ -16,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
+import { useAdmin } from "@/hooks/useAdmin";
 import yolafreshLogo from "@/assets/yolafresh-logo.jpg";
 
 const menuItems = [
@@ -24,6 +28,11 @@ const menuItems = [
   { title: "Guides", url: "/guides", icon: BookOpen },
   { title: "Procedures", url: "/procedures", icon: FileText },
   { title: "My Learning", url: "/my-learning", icon: GraduationCap },
+];
+
+const adminMenuItems = [
+  { title: "Manage Videos", url: "/admin/videos", icon: Upload },
+  { title: "Manage Employees", url: "/admin/employees", icon: Users },
 ];
 
 interface AppSidebarProps {
@@ -35,6 +44,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const { user, signOut } = useAuth();
+  const { isAdmin } = useAdmin();
 
   const getUserInitials = () => {
     const email = user?.email || "";
@@ -134,6 +144,37 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
               </li>
             ))}
           </ul>
+
+          {/* Admin Section */}
+          {isAdmin && (
+            <>
+              {isOpen && (
+                <div className="mt-6 mb-2 px-3">
+                  <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    <Shield className="w-3 h-3" />
+                    Admin
+                  </div>
+                </div>
+              )}
+              <ul className="space-y-1">
+                {adminMenuItems.map((item) => (
+                  <li key={item.title}>
+                    <NavLink
+                      to={item.url}
+                      className={cn(
+                        "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sidebar-foreground hover:bg-sidebar-accent transition-colors",
+                        !isOpen && "lg:justify-center lg:px-2"
+                      )}
+                      activeClassName="bg-primary text-primary-foreground hover:bg-primary"
+                    >
+                      <item.icon className="w-5 h-5 shrink-0" />
+                      {isOpen && <span className="font-medium">{item.title}</span>}
+                    </NavLink>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
         </nav>
 
         {/* Footer */}
