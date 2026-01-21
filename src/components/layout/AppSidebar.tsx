@@ -28,10 +28,10 @@ const menuItems = [
   { title: "Guides", url: "/guides", icon: BookOpen },
   { title: "Procedures", url: "/procedures", icon: FileText },
   { title: "My Learning", url: "/my-learning", icon: GraduationCap },
-  { title: "Upload Video", url: "/upload-video", icon: Upload },
 ];
 
 const adminMenuItems = [
+  { title: "Upload Video", url: "/upload-video", icon: Upload },
   { title: "Manage Videos", url: "/admin/videos", icon: Upload },
   { title: "Manage Employees", url: "/admin/employees", icon: Users },
 ];
