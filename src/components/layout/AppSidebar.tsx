@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { 
-  Home, 
-  Video, 
-  BookOpen, 
-  FileText, 
+import {
+  Home,
+  Video,
+  BookOpen,
+  FileText,
   GraduationCap,
   Search,
   ChevronLeft,
@@ -28,6 +28,7 @@ const menuItems = [
   { title: "Guides", url: "/guides", icon: BookOpen },
   { title: "Procedures", url: "/procedures", icon: FileText },
   { title: "My Learning", url: "/my-learning", icon: GraduationCap },
+  { title: "Upload Video", url: "/upload-video", icon: Upload },
 ];
 
 const adminMenuItems = [
@@ -60,12 +61,12 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
     <>
       {/* Mobile overlay */}
       {isOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-foreground/20 backdrop-blur-sm z-40 lg:hidden"
           onClick={onToggle}
         />
       )}
-      
+
       {/* Sidebar */}
       <aside
         className={cn(
@@ -82,15 +83,15 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
           {isOpen ? (
             <>
               <div className="flex items-center gap-2">
-                <img 
-                  src={yolafreshLogo} 
-                  alt="Yolafresh" 
+                <img
+                  src={yolafreshLogo}
+                  alt="Yolafresh"
                   className="h-8 object-contain"
                 />
               </div>
-              <Button 
-                variant="ghost" 
-                size="icon" 
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={onToggle}
                 className="text-sidebar-foreground hover:bg-sidebar-accent"
               >
@@ -98,9 +99,9 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
               </Button>
             </>
           ) : (
-            <Button 
-              variant="ghost" 
-              size="icon" 
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={onToggle}
               className="hidden lg:flex text-sidebar-foreground hover:bg-sidebar-accent"
             >
@@ -189,9 +190,9 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                 <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
               </div>
             </div>
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               className="w-full gap-2"
               onClick={signOut}
             >
