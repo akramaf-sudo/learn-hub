@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Loader2, Upload } from "lucide-react";
-import { AppSidebar } from "@/components/AppSidebar";
+import { MainLayout } from "@/components/layout/MainLayout";
 
 export default function UploadVideo() {
     const [title, setTitle] = useState("");
@@ -72,9 +72,8 @@ export default function UploadVideo() {
     };
 
     return (
-        <div className="flex min-h-screen bg-background">
-            <AppSidebar />
-            <main className="flex-1 p-8">
+        <MainLayout>
+            <div className="p-8">
                 <div className="max-w-2xl mx-auto">
                     <Card>
                         <CardHeader>
@@ -150,7 +149,7 @@ export default function UploadVideo() {
                         </CardContent>
                     </Card>
                 </div>
-            </main>
-        </div>
+            </div>
+        </MainLayout>
     );
 }
