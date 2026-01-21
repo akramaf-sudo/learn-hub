@@ -15,6 +15,7 @@ import Login from "./pages/Login";
 import AdminVideos from "./pages/AdminVideos";
 import AdminEmployees from "./pages/AdminEmployees";
 import UploadVideo from "./pages/UploadVideo";
+import UpdatePassword from "./pages/UpdatePassword";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
         <AuthProvider>
           <Routes>
             <Route path="/login" element={<Login />} />
+            <Route path="/update-password" element={<UpdatePassword />} />
             <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
             <Route path="/videos" element={<ProtectedRoute><Videos /></ProtectedRoute>} />
             <Route path="/guides" element={<ProtectedRoute><Guides /></ProtectedRoute>} />
