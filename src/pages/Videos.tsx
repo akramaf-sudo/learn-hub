@@ -3,13 +3,32 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Play, Clock, Filter, Loader2 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Search, Play, Clock, Filter, Loader2, X } from "lucide-react";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 
+interface Video {
+  id: string;
+  title: string;
+  description: string | null;
+  video_url: string;
+  thumbnail_url: string | null;
+  duration: string | null;
+  category: string;
+  created_at: string;
+}
+
 const Videos = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
 
   const { data: videos, isLoading } = useQuery({
     queryKey: ["training-videos"],
@@ -20,7 +39,7 @@ const Videos = () => {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      return data;
+      return data as Video[];
     },
   });
 
@@ -67,6 +86,7 @@ const Videos = () => {
               <Card
                 key={video.id}
                 className="group cursor-pointer overflow-hidden hover:shadow-lg transition-all duration-300 border-border bg-card"
+                onClick={() => setSelectedVideo(video)}
               >
                 <div className="relative overflow-hidden">
                   <img
@@ -103,6 +123,44 @@ const Videos = () => {
             <p className="text-muted">No videos found. {videos?.length === 0 && "Ask an admin to upload training videos."}</p>
           </div>
         )}
+
+        {/* Video Player Dialog */}
+        <Dialog open={!!selectedVideo} onOpenChange={(open) => !open && setSelectedVideo(null)}>
+          <DialogContent className="max-w-4xl w-full p-0 overflow-hidden">
+            <DialogHeader className="p-4 pb-0">
+              <div className="flex items-start justify-between">
+                <div>
+                  <DialogTitle className="text-xl">{selectedVideo?.title}</DialogTitle>
+                  <DialogDescription className="mt-1">
+                    <Badge variant="secondary" className="mr-2">
+                      {selectedVideo?.category}
+                    </Badge>
+                    {selectedVideo?.duration && (
+                      <span className="text-xs text-muted">{selectedVideo.duration}</span>
+                    )}
+                  </DialogDescription>
+                </div>
+              </div>
+            </DialogHeader>
+            <div className="p-4 pt-2">
+              {selectedVideo && (
+                <div className="rounded-lg overflow-hidden bg-black">
+                  <video
+                    controls
+                    autoPlay
+                    className="w-full aspect-video"
+                    src={selectedVideo.video_url}
+                  >
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+              )}
+              {selectedVideo?.description && (
+                <p className="mt-4 text-sm text-muted">{selectedVideo.description}</p>
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </MainLayout>
   );
