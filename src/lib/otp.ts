@@ -35,7 +35,7 @@ export async function requestOTP(phoneNumber: string): Promise<OTPResult> {
 
         if (dbError) {
             console.error("Database error:", dbError);
-            return { success: false, error: "Failed to generate OTP" };
+            return { success: false, error: `Database Error: ${dbError.message}` };
         }
 
         // Send OTP via Infobip
