@@ -12,6 +12,7 @@ import Guides from "./pages/Guides";
 import Procedures from "./pages/Procedures";
 import MyLearning from "./pages/MyLearning";
 import Login from "./pages/Login";
+import PhoneAuth from "./pages/PhoneAuth";
 import AdminVideos from "./pages/AdminVideos";
 import AdminEmployees from "./pages/AdminEmployees";
 import UploadVideo from "./pages/UploadVideo";
@@ -31,7 +32,8 @@ const App = () => (
         <BrowserRouter>
           <AuthProvider>
             <Routes>
-              <Route path="/login" element={<Login />} />
+              <Route path="/login" element={<PhoneAuth />} />
+              <Route path="/login-old" element={<Login />} />
               <Route path="/update-password" element={<UpdatePassword />} />
               <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
               <Route path="/videos" element={<ProtectedRoute><Videos /></ProtectedRoute>} />
