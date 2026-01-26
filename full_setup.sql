@@ -13,6 +13,13 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
 
+-- 1b. Create Whitelist Table
+CREATE TABLE IF NOT EXISTS public.whitelisted_phone_numbers (
+    phone_number TEXT PRIMARY KEY,
+    full_name TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
+);
+
 -- 2. Create User Roles Table
 CREATE TABLE IF NOT EXISTS public.user_roles (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -58,8 +65,15 @@ ALTER TABLE public.user_roles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.training_videos ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.otp_codes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.whitelisted_phone_numbers ENABLE ROW LEVEL SECURITY;
 
 -- POLICIES
+
+-- Whitelist: Allow public check
+CREATE POLICY "Allow public check for whitelist" ON public.whitelisted_phone_numbers FOR SELECT USING (true);
+CREATE POLICY "Admins can manage whitelist" ON public.whitelisted_phone_numbers FOR ALL USING (
+  EXISTS (SELECT 1 FROM public.user_roles WHERE user_id = auth.uid() AND role = 'admin')
+);
 
 -- Profiles: Users can view all profiles, but only edit their own
 CREATE POLICY "Public profiles are viewable by everyone" ON public.profiles FOR SELECT USING (true);
