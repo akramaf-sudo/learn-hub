@@ -10,12 +10,11 @@ import { useNavigate } from "react-router-dom";
 const Index = () => {
   const navigate = useNavigate();
 
-  const categories = [
+const categories = [
     {
       title: "Video Tutorials",
       description: "Watch step-by-step video guides on all our tools",
       icon: Video,
-      count: 45,
       color: "primary" as const,
       url: "/videos",
     },
@@ -23,7 +22,6 @@ const Index = () => {
       title: "Written Guides",
       description: "Detailed documentation and how-to articles",
       icon: BookOpen,
-      count: 72,
       color: "accent" as const,
       url: "/guides",
     },
@@ -31,7 +29,6 @@ const Index = () => {
       title: "Procedures",
       description: "Standard operating procedures and workflows",
       icon: FileText,
-      count: 28,
       color: "secondary" as const,
       url: "/procedures",
     },
