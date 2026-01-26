@@ -6,9 +6,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate } from "react-router-dom";
 
+import { useLanguage } from "@/contexts/LanguageContext";
+
 export function RecentTraining() {
   const navigate = useNavigate();
-  
+  const { t } = useLanguage();
+
   const { data: videos, isLoading } = useQuery({
     queryKey: ["recent-videos"],
     queryFn: async () => {
@@ -27,12 +30,12 @@ export function RecentTraining() {
     <Card className="border-border bg-card">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-semibold text-card-foreground">Recent Training</CardTitle>
-          <button 
+          <CardTitle className="text-lg font-semibold text-card-foreground">{t("dashboard.recentTraining")}</CardTitle>
+          <button
             className="text-sm text-primary hover:underline"
             onClick={() => navigate("/videos")}
           >
-            View all
+            {t("dashboard.viewAll")}
           </button>
         </div>
       </CardHeader>
@@ -52,8 +55,8 @@ export function RecentTraining() {
         ) : videos && videos.length > 0 ? (
           <div className="space-y-4">
             {videos.map((video) => (
-              <div 
-                key={video.id} 
+              <div
+                key={video.id}
                 className="flex items-center gap-4 p-3 rounded-lg hover:bg-accent transition-colors cursor-pointer group"
                 onClick={() => navigate("/videos")}
               >
@@ -78,7 +81,7 @@ export function RecentTraining() {
           </div>
         ) : (
           <p className="text-center py-8 text-muted">
-            No training videos available yet.
+            {t("dashboard.noVideos")}
           </p>
         )}
       </CardContent>

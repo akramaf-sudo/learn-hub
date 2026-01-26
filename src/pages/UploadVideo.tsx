@@ -64,8 +64,8 @@ export default function UploadVideo() {
 
             toast.success("Video uploaded successfully!");
             navigate("/");
-        } catch (error: any) {
-            toast.error(error.message || "Error uploading video");
+        } catch (error) {
+            toast.error((error as Error).message || "Error uploading video");
         } finally {
             setUploading(false);
         }

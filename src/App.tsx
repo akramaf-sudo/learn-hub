@@ -18,6 +18,8 @@ import UploadVideo from "./pages/UploadVideo";
 import UpdatePassword from "./pages/UpdatePassword";
 import NotFound from "./pages/NotFound";
 
+import { LanguageProvider } from "@/contexts/LanguageContext";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -25,24 +27,26 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
-        <AuthProvider>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/update-password" element={<UpdatePassword />} />
-            <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
-            <Route path="/videos" element={<ProtectedRoute><Videos /></ProtectedRoute>} />
-            <Route path="/guides" element={<ProtectedRoute><Guides /></ProtectedRoute>} />
-            <Route path="/procedures" element={<ProtectedRoute><Procedures /></ProtectedRoute>} />
-            <Route path="/my-learning" element={<ProtectedRoute><MyLearning /></ProtectedRoute>} />
-            <Route path="/admin/videos" element={<ProtectedRoute><AdminRoute><AdminVideos /></AdminRoute></ProtectedRoute>} />
-            <Route path="/admin/employees" element={<ProtectedRoute><AdminRoute><AdminEmployees /></AdminRoute></ProtectedRoute>} />
-            <Route path="/upload-video" element={<ProtectedRoute><AdminRoute><UploadVideo /></AdminRoute></ProtectedRoute>} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </AuthProvider>
-      </BrowserRouter>
+      <LanguageProvider>
+        <BrowserRouter>
+          <AuthProvider>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/update-password" element={<UpdatePassword />} />
+              <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+              <Route path="/videos" element={<ProtectedRoute><Videos /></ProtectedRoute>} />
+              <Route path="/guides" element={<ProtectedRoute><AdminRoute><Guides /></AdminRoute></ProtectedRoute>} />
+              <Route path="/procedures" element={<ProtectedRoute><AdminRoute><Procedures /></AdminRoute></ProtectedRoute>} />
+              <Route path="/my-learning" element={<ProtectedRoute><MyLearning /></ProtectedRoute>} />
+              <Route path="/admin/videos" element={<ProtectedRoute><AdminRoute><AdminVideos /></AdminRoute></ProtectedRoute>} />
+              <Route path="/admin/employees" element={<ProtectedRoute><AdminRoute><AdminEmployees /></AdminRoute></ProtectedRoute>} />
+              <Route path="/upload-video" element={<ProtectedRoute><AdminRoute><UploadVideo /></AdminRoute></ProtectedRoute>} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </AuthProvider>
+        </BrowserRouter>
+      </LanguageProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

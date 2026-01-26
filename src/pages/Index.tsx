@@ -6,33 +6,45 @@ import { RecentTraining } from "@/components/dashboard/RecentTraining";
 import { FeaturedContent } from "@/components/dashboard/FeaturedContent";
 import { Video, BookOpen, FileText } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAdmin } from "@/hooks/useAdmin";
+
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Index = () => {
   const navigate = useNavigate();
+  const { isAdmin } = useAdmin();
+  const { t } = useLanguage();
 
-const categories = [
+  const categories = [
     {
-      title: "Video Tutorials",
-      description: "Watch step-by-step video guides on all our tools",
+      id: "videos",
+      title: t("dashboard.videoTutorials"),
+      description: t("dashboard.videoDesc"),
       icon: Video,
       color: "primary" as const,
       url: "/videos",
     },
     {
-      title: "Written Guides",
-      description: "Detailed documentation and how-to articles",
+      id: "guides",
+      title: t("dashboard.writtenGuides"),
+      description: t("dashboard.guideDesc"),
       icon: BookOpen,
       color: "accent" as const,
       url: "/guides",
     },
     {
-      title: "Procedures",
-      description: "Standard operating procedures and workflows",
+      id: "procedures",
+      title: t("dashboard.procedures"),
+      description: t("dashboard.procDesc"),
       icon: FileText,
       color: "secondary" as const,
       url: "/procedures",
     },
   ];
+
+  const visibleCategories = categories.filter(category =>
+    isAdmin || category.id === "videos"
+  );
 
   return (
     <MainLayout>
@@ -42,11 +54,11 @@ const categories = [
 
         {/* Categories Grid */}
         <section>
-          <h2 className="text-xl font-semibold text-foreground mb-4">Browse by Category</h2>
+          <h2 className="text-xl font-semibold text-foreground mb-4">{t("dashboard.browseCategory")}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {categories.map((category) => (
+            {visibleCategories.map((category) => (
               <TrainingCategoryCard
-                key={category.title}
+                key={category.id}
                 {...category}
                 onClick={() => navigate(category.url)}
               />
@@ -64,8 +76,8 @@ const categories = [
           </div>
         </div>
 
-        {/* Featured Content */}
-        <FeaturedContent />
+        {/* Featured Content - Only for admins if it contains mixed content, or keep if generic */}
+        {isAdmin && <FeaturedContent />}
       </div>
     </MainLayout>
   );

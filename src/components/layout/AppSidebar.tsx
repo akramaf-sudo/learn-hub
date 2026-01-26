@@ -11,7 +11,8 @@ import {
   LogOut,
   Shield,
   Upload,
-  Users
+  Users,
+  Languages
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
@@ -20,21 +21,8 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
+import { useLanguage } from "@/contexts/LanguageContext";
 import yolafreshLogo from "@/assets/yolafresh-logo.jpg";
-
-const menuItems = [
-  { title: "Dashboard", url: "/", icon: Home },
-  { title: "Videos", url: "/videos", icon: Video },
-  { title: "Guides", url: "/guides", icon: BookOpen },
-  { title: "Procedures", url: "/procedures", icon: FileText },
-  { title: "My Learning", url: "/my-learning", icon: GraduationCap },
-];
-
-const adminMenuItems = [
-  { title: "Upload Video", url: "/upload-video", icon: Upload },
-  { title: "Manage Videos", url: "/admin/videos", icon: Upload },
-  { title: "Manage Employees", url: "/admin/employees", icon: Users },
-];
 
 interface AppSidebarProps {
   isOpen: boolean;
@@ -46,6 +34,21 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const { user, signOut } = useAuth();
   const { isAdmin } = useAdmin();
+  const { t, language, setLanguage } = useLanguage();
+
+  const menuItems = [
+    { title: t("sidebar.dashboard"), url: "/", icon: Home },
+    { title: t("sidebar.videos"), url: "/videos", icon: Video },
+    { title: t("sidebar.guides"), url: "/guides", icon: BookOpen },
+    { title: t("sidebar.procedures"), url: "/procedures", icon: FileText },
+    { title: t("sidebar.myLearning"), url: "/my-learning", icon: GraduationCap },
+  ];
+
+  const adminMenuItems = [
+    { title: t("sidebar.uploadVideo"), url: "/upload-video", icon: Upload },
+    { title: t("sidebar.manageVideos"), url: "/admin/videos", icon: Upload },
+    { title: t("sidebar.manageEmployees"), url: "/admin/employees", icon: Users },
+  ];
 
   const getUserInitials = () => {
     const email = user?.email || "";
@@ -55,6 +58,10 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
 
   const getUserName = () => {
     return user?.user_metadata?.full_name || user?.email?.split("@")[0] || "Employee";
+  };
+
+  const toggleLanguage = () => {
+    setLanguage(language === "en" ? "ar" : "en");
   };
 
   return (
@@ -114,12 +121,12 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
         {isOpen && (
           <div className="p-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground rtl:left-auto rtl:right-3" />
               <Input
-                placeholder="Search training..."
+                placeholder={t("sidebar.searchPlaceholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 bg-accent border-sidebar-border"
+                className="pl-9 rtl:pl-3 rtl:pr-9 bg-accent border-sidebar-border"
               />
             </div>
           </div>
@@ -128,22 +135,28 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
         {/* Navigation */}
         <nav className="flex-1 p-2 overflow-y-auto">
           <ul className="space-y-1">
-            {menuItems.map((item) => (
-              <li key={item.title}>
-                <NavLink
-                  to={item.url}
-                  end={item.url === "/"}
-                  className={cn(
-                    "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sidebar-foreground hover:bg-sidebar-accent transition-colors",
-                    !isOpen && "lg:justify-center lg:px-2"
-                  )}
-                  activeClassName="bg-primary text-primary-foreground hover:bg-primary"
-                >
-                  <item.icon className="w-5 h-5 shrink-0" />
-                  {isOpen && <span className="font-medium">{item.title}</span>}
-                </NavLink>
-              </li>
-            ))}
+            {menuItems
+              .filter(item => {
+                if (isAdmin) return true;
+                // Employees only see Dashboard, Videos, and My Learning
+                return ["Dashboard", "Videos", "My Learning", t("sidebar.dashboard"), t("sidebar.videos"), t("sidebar.myLearning")].includes(item.title);
+              })
+              .map((item) => (
+                <li key={item.title}>
+                  <NavLink
+                    to={item.url}
+                    end={item.url === "/"}
+                    className={cn(
+                      "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sidebar-foreground hover:bg-sidebar-accent transition-colors",
+                      !isOpen && "lg:justify-center lg:px-2"
+                    )}
+                    activeClassName="bg-primary text-primary-foreground hover:bg-primary"
+                  >
+                    <item.icon className="w-5 h-5 shrink-0" />
+                    {isOpen && <span className="font-medium">{item.title}</span>}
+                  </NavLink>
+                </li>
+              ))}
           </ul>
 
           {/* Admin Section */}
@@ -153,7 +166,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                 <div className="mt-6 mb-2 px-3">
                   <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                     <Shield className="w-3 h-3" />
-                    Admin
+                    {t("sidebar.admin")}
                   </div>
                 </div>
               )}
@@ -181,6 +194,16 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
         {/* Footer */}
         {isOpen && (
           <div className="p-4 border-t border-sidebar-border">
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full gap-2 mb-3"
+              onClick={toggleLanguage}
+            >
+              <Languages className="w-4 h-4" />
+              {language === "en" ? "العربية" : "English"}
+            </Button>
+
             <div className="flex items-center gap-3 mb-3">
               <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                 <span className="text-sm font-semibold text-primary">{getUserInitials()}</span>
@@ -197,7 +220,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
               onClick={signOut}
             >
               <LogOut className="w-4 h-4" />
-              Sign Out
+              {t("sidebar.signOut")}
             </Button>
           </div>
         )}

@@ -26,9 +26,12 @@ interface Video {
   created_at: string;
 }
 
+import { useLanguage } from "@/contexts/LanguageContext";
+
 const Videos = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
+  const { t } = useLanguage();
 
   const { data: videos, isLoading } = useQuery({
     queryKey: ["training-videos"],
@@ -54,24 +57,24 @@ const Videos = () => {
       <div className="p-4 md:p-6 lg:p-8 space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">Video Tutorials</h1>
-          <p className="text-muted">Watch and learn with our comprehensive video library</p>
+          <h1 className="text-3xl font-bold text-foreground mb-2">{t("videos.title")}</h1>
+          <p className="text-muted">{t("videos.subtitle")}</p>
         </div>
 
         {/* Search and Filter */}
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted rtl:left-auto rtl:right-3" />
             <Input
-              placeholder="Search videos..."
+              placeholder={t("videos.search")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
+              className="pl-10 rtl:pl-3 rtl:pr-10"
             />
           </div>
           <Button variant="outline" className="gap-2">
             <Filter className="w-4 h-4" />
-            Filters
+            {t("videos.filters")}
           </Button>
         </div>
 
@@ -120,7 +123,7 @@ const Videos = () => {
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-muted">No videos found. {videos?.length === 0 && "Ask an admin to upload training videos."}</p>
+            <p className="text-muted">{t("videos.noVideosFound")} {videos?.length === 0 && t("videos.askAdmin")}</p>
           </div>
         )}
 
