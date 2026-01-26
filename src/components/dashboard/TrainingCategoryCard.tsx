@@ -6,7 +6,6 @@ interface TrainingCategoryCardProps {
   title: string;
   description: string;
   icon: LucideIcon;
-  count: number;
   color: "primary" | "secondary" | "accent";
   onClick?: () => void;
 }
@@ -15,7 +14,6 @@ export function TrainingCategoryCard({
   title, 
   description, 
   icon: Icon, 
-  count,
   color,
   onClick 
 }: TrainingCategoryCardProps) {
@@ -39,7 +37,6 @@ export function TrainingCategoryCard({
         </div>
         <h3 className="text-lg font-semibold text-card-foreground mb-1">{title}</h3>
         <p className="text-sm text-muted mb-3">{description}</p>
-        <span className="text-xs font-medium text-primary">{count} items available</span>
       </CardContent>
     </Card>
   );

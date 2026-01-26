@@ -1,100 +1,119 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Clock, Users, Star } from "lucide-react";
-
-interface FeaturedItem {
-  id: string;
-  title: string;
-  description: string;
-  thumbnail: string;
-  duration: string;
-  enrollments: number;
-  rating: number;
-  isNew?: boolean;
-}
-
-const featuredItems: FeaturedItem[] = [
-  {
-    id: "1",
-    title: "Complete CRM Mastery Course",
-    description: "Learn everything about our customer relationship management system",
-    thumbnail: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=250&fit=crop",
-    duration: "2h 30min",
-    enrollments: 234,
-    rating: 4.8,
-    isNew: true,
-  },
-  {
-    id: "2",
-    title: "Project Management Essentials",
-    description: "Master our internal project tracking and collaboration tools",
-    thumbnail: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=250&fit=crop",
-    duration: "1h 45min",
-    enrollments: 189,
-    rating: 4.6,
-  },
-  {
-    id: "3",
-    title: "Data Analytics Dashboard",
-    description: "Understanding and utilizing our business intelligence tools",
-    thumbnail: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=250&fit=crop",
-    duration: "3h 15min",
-    enrollments: 156,
-    rating: 4.9,
-  },
-];
+import { Clock, Play } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useNavigate } from "react-router-dom";
 
 export function FeaturedContent() {
+  const navigate = useNavigate();
+  
+  const { data: videos, isLoading } = useQuery({
+    queryKey: ["featured-videos"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("training_videos")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(3);
+
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  if (isLoading) {
+    return (
+      <section>
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-2xl font-bold text-foreground">Featured Training</h2>
+            <p className="text-muted">Latest training content</p>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3].map((i) => (
+            <Card key={i} className="border-border bg-card overflow-hidden">
+              <Skeleton className="w-full h-40" />
+              <CardContent className="p-5">
+                <Skeleton className="h-5 w-3/4 mb-2" />
+                <Skeleton className="h-4 w-full mb-4" />
+                <Skeleton className="h-3 w-1/2" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  if (!videos || videos.length === 0) {
+    return (
+      <section>
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-2xl font-bold text-foreground">Featured Training</h2>
+            <p className="text-muted">Latest training content</p>
+          </div>
+        </div>
+        <Card className="border-border bg-card p-8 text-center">
+          <p className="text-muted">No training content available yet. Check back soon!</p>
+        </Card>
+      </section>
+    );
+  }
+
   return (
     <section>
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-2xl font-bold text-foreground">Featured Training</h2>
-          <p className="text-muted">Most popular courses this month</p>
+          <p className="text-muted">Latest training content</p>
         </div>
-        <button className="text-sm text-primary hover:underline">See all courses</button>
+        <button 
+          className="text-sm text-primary hover:underline"
+          onClick={() => navigate("/videos")}
+        >
+          See all videos
+        </button>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {featuredItems.map((item) => (
+        {videos.map((video) => (
           <Card 
-            key={item.id} 
+            key={video.id} 
             className="group cursor-pointer overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border-border bg-card"
+            onClick={() => navigate("/videos")}
           >
-            <div className="relative overflow-hidden">
-              <img 
-                src={item.thumbnail} 
-                alt={item.title}
-                className="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-105"
-              />
-              {item.isNew && (
-                <Badge className="absolute top-3 left-3 bg-primary text-primary-foreground">
-                  New
-                </Badge>
+            <div className="relative overflow-hidden bg-muted h-40 flex items-center justify-center">
+              {video.thumbnail_url ? (
+                <img 
+                  src={video.thumbnail_url} 
+                  alt={video.title}
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+              ) : (
+                <Play className="w-12 h-12 text-muted-foreground/50" />
               )}
+              <Badge className="absolute top-3 left-3 bg-primary text-primary-foreground">
+                {video.category}
+              </Badge>
             </div>
             <CardContent className="p-5">
               <h3 className="font-semibold text-card-foreground mb-2 line-clamp-1 group-hover:text-primary transition-colors">
-                {item.title}
+                {video.title}
               </h3>
               <p className="text-sm text-muted mb-4 line-clamp-2">
-                {item.description}
+                {video.description || "No description available"}
               </p>
-              <div className="flex items-center justify-between text-xs text-muted">
-                <div className="flex items-center gap-3">
+              <div className="flex items-center text-xs text-muted">
+                {video.duration && (
                   <span className="flex items-center gap-1">
                     <Clock className="w-3.5 h-3.5" />
-                    {item.duration}
+                    {video.duration}
                   </span>
-                  <span className="flex items-center gap-1">
-                    <Users className="w-3.5 h-3.5" />
-                    {item.enrollments}
-                  </span>
-                </div>
-                <span className="flex items-center gap-1 text-chart-1">
-                  <Star className="w-3.5 h-3.5 fill-current" />
-                  {item.rating}
-                </span>
+                )}
               </div>
             </CardContent>
           </Card>
