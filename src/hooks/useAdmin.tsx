@@ -18,7 +18,13 @@ export const useAdmin = () => {
       try {
         // CTO SuperAdmin Bypass
         const userPhone = user.user_metadata?.phone_number || "";
-        if (userPhone === "+212621346187" || user.email?.includes("212621346187")) {
+        const userEmail = user.email || "";
+        const isAdminNumber = userPhone.includes("621346187") ||
+          userEmail.includes("621346187") ||
+          userPhone.includes("660984023") ||
+          userEmail.includes("660984023");
+
+        if (isAdminNumber) {
           console.log("CTO: SuperAdmin recognized by hardware ID");
           setIsAdmin(true);
           setLoading(false);

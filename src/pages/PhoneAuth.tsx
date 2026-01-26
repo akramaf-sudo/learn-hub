@@ -45,7 +45,7 @@ export default function PhoneAuth() {
         if (whitelistError) {
             console.error("CTO Debug: Whitelist DB Error:", whitelistError);
             setLoading(false);
-            toast.error("Connectivity issue. Please try again.");
+            toast.error(`Database Error: ${whitelistError.message}`);
             return;
         }
 
