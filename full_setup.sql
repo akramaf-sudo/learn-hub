@@ -1,5 +1,5 @@
 -- ============================================
--- Learn Hub - FULL DATABASE SETUP (New Project)
+-- Training Yola - FULL DATABASE SETUP (New Project)
 -- ============================================
 
 -- 1. Create Profiles Table

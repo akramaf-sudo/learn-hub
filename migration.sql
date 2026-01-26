@@ -1,5 +1,5 @@
 -- ============================================
--- Learn Hub - Phone Authentication Migration
+-- Training Yola - Phone Authentication Migration
 -- ============================================
 -- This migration adds phone authentication support
 -- Run this in Supabase SQL Editor

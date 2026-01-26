@@ -7,7 +7,7 @@
 1. **Open Supabase Dashboard**
    - Go to: https://supabase.com/dashboard
    - Log in with your credentials
-   - Select your **learn-hub** project
+   - Select your **Training Yola** project
 
 2. **Navigate to SQL Editor**
    - Click on **SQL Editor** in the left sidebar
@@ -26,7 +26,7 @@
    - Check the **Table Editor** to confirm `otp_codes` table exists
 
 6. **Test Your App**
-   - Refresh your Learn Hub application
+   - Refresh your Training Yola application
    - Try sending OTP again - it should work now!
 
 ---

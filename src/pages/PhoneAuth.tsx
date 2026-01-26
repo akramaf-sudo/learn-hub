@@ -149,7 +149,7 @@ export default function PhoneAuth() {
                     </div>
                     <div className="text-center">
                         <CardTitle className="text-2xl">
-                            {step === "phone" && "Welcome to Learn Hub"}
+                            {step === "phone" && "Welcome to Training Yola"}
                             {step === "otp" && "Verify Your Phone"}
                             {step === "register" && "Complete Your Profile"}
                         </CardTitle>
