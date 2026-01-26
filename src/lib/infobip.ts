@@ -61,13 +61,18 @@ export function generateOTP(length: number = 6): string {
 
 export function formatPhoneNumber(phone: string): string {
     // Remove all non-digit characters
-    const cleaned = phone.replace(/\D/g, "");
+    let cleaned = phone.replace(/\D/g, "");
 
-    // If it doesn't start with +, assume it needs country code
-    if (!phone.startsWith("+")) {
-        // Default to Morocco (+212) if no country code
-        return `+212${cleaned}`;
+    // If it starts with +, return it cleaned
+    if (phone.startsWith("+")) {
+        return `+${cleaned}`;
     }
 
-    return `+${cleaned}`;
+    // Handle Moroccan leading 0 (e.g., 06XXXX becomes 6XXXX)
+    if (cleaned.startsWith("0")) {
+        cleaned = cleaned.substring(1);
+    }
+
+    // Default to Morocco (+212)
+    return `+212${cleaned}`;
 }

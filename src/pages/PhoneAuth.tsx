@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Loader2, Phone, Shield } from "lucide-react";
 import { toast } from "sonner";
 import { requestOTP, verifyOTP } from "@/lib/otp";
+import { formatPhoneNumber } from "@/lib/infobip";
 import { supabase } from "@/integrations/supabase/client";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -30,8 +31,9 @@ export default function PhoneAuth() {
 
         setLoading(true);
 
-        // 1. Format number for check
-        const formattedPhone = phoneNumber.startsWith("+") ? phoneNumber : `+212${phoneNumber.replace(/\D/g, "")}`;
+        // 1. Format number using centralized logic
+        const formattedPhone = formatPhoneNumber(phoneNumber);
+        console.log("CTO Debug: Checking whitelist for:", formattedPhone);
 
         // 2. Check Whitelist
         const { data: isWhitelisted, error: whitelistError } = await supabase
@@ -40,7 +42,15 @@ export default function PhoneAuth() {
             .eq("phone_number", formattedPhone)
             .maybeSingle();
 
-        if (whitelistError || !isWhitelisted) {
+        if (whitelistError) {
+            console.error("CTO Debug: Whitelist DB Error:", whitelistError);
+            setLoading(false);
+            toast.error("Connectivity issue. Please try again.");
+            return;
+        }
+
+        if (!isWhitelisted) {
+            console.warn("CTO Debug: Number not in whitelist:", formattedPhone);
             setLoading(false);
             toast.error("You cannot access. Please speak with the admin.");
             return;
