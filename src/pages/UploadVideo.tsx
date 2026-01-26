@@ -39,14 +39,14 @@ export default function UploadVideo() {
 
             // 1. Upload file to storage
             const { error: uploadError } = await supabase.storage
-                .from('videos')
+                .from('training-videos')
                 .upload(filePath, file);
 
             if (uploadError) throw uploadError;
 
             // 2. Get public URL
             const { data: { publicUrl } } = supabase.storage
-                .from('videos')
+                .from('training-videos')
                 .getPublicUrl(filePath);
 
             // 3. Insert record into database
