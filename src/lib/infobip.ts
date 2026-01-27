@@ -20,7 +20,7 @@ export async function sendOTP(phoneNumber: string, code: string): Promise<SendOT
                 messages: [
                     {
                         destinations: [{ to: phoneNumber }],
-                        from: "TrainingYola",
+                        from: "YolaFresh",
                         text: `Your Training Yola verification code is: ${code}. Valid for 5 minutes.`,
                     },
                 ],
