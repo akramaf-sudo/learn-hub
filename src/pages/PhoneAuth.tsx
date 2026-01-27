@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { useLanguage } from "@/contexts/LanguageContext";
 import yolafreshLogo from "@/assets/yolafresh-logo.jpg";
+import { logActivity } from "@/lib/logger";
 
 export default function PhoneAuth() {
     const navigate = useNavigate();
@@ -106,6 +107,11 @@ export default function PhoneAuth() {
             }
 
             toast.success("Welcome back!");
+            await logActivity({
+                event_type: "login",
+                description: "User logged in with phone",
+                metadata: { phone: formattedPhone }
+            });
             navigate("/");
         } else {
             // New user - show registration form
@@ -160,6 +166,11 @@ export default function PhoneAuth() {
 
         setLoading(false);
         toast.success("Account created successfully!");
+        await logActivity({
+            event_type: "login",
+            description: "New user registered and logged in",
+            metadata: { phone: formattedPhone, name: fullName }
+        });
         navigate("/");
     };
 

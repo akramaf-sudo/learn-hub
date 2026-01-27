@@ -14,6 +14,8 @@ import { Search, Play, Clock, Filter, Loader2, X } from "lucide-react";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
+import { logActivity } from "@/lib/logger";
+import { useEffect } from "react";
 
 interface Video {
   id: string;
@@ -30,8 +32,18 @@ import { useLanguage } from "@/contexts/LanguageContext";
 
 const Videos = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
   const { t } = useLanguage();
+  const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
+
+  useEffect(() => {
+    if (selectedVideo) {
+      logActivity({
+        event_type: "video_view",
+        description: `Viewed video: ${selectedVideo.title}`,
+        metadata: { video_id: selectedVideo.id, title: selectedVideo.title }
+      });
+    }
+  }, [selectedVideo]);
 
   const { data: videos, isLoading } = useQuery({
     queryKey: ["training-videos"],

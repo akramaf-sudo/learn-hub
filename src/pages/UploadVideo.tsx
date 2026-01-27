@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { toast } from "sonner";
 import { Loader2, Upload } from "lucide-react";
 import { MainLayout } from "@/components/layout/MainLayout";
+import { logActivity } from "@/lib/logger";
 
 export default function UploadVideo() {
     const [title, setTitle] = useState("");
@@ -61,6 +62,12 @@ export default function UploadVideo() {
                 });
 
             if (dbError) throw dbError;
+
+            await logActivity({
+                event_type: "upload",
+                description: `Uploaded video: ${title}`,
+                metadata: { title, category }
+            });
 
             toast.success("Video uploaded successfully!");
             navigate("/");

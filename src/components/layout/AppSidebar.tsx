@@ -12,7 +12,8 @@ import {
   Shield,
   Upload,
   Users,
-  Languages
+  Languages,
+  Activity
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
@@ -48,6 +49,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
     { title: t("sidebar.uploadVideo"), url: "/upload-video", icon: Upload },
     { title: t("sidebar.manageVideos"), url: "/admin/videos", icon: Upload },
     { title: t("sidebar.manageEmployees"), url: "/admin/employees", icon: Users },
+    { title: t("sidebar.activityLogs"), url: "/admin/activity", icon: Activity },
   ];
 
   const getUserInitials = () => {

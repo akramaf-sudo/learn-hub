@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AppSidebar } from "./AppSidebar";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useLocation } from "react-router-dom";
+import { logActivity } from "@/lib/logger";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -10,16 +12,25 @@ interface MainLayoutProps {
 
 export function MainLayout({ children }: MainLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const location = useLocation();
+
+  useEffect(() => {
+    logActivity({
+      event_type: "page_view",
+      description: `Visited page: ${location.pathname}`,
+      metadata: { path: location.pathname }
+    });
+  }, [location.pathname]);
 
   return (
     <div className="min-h-screen flex w-full bg-background">
       <AppSidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
-      
+
       <div className="flex-1 flex flex-col min-w-0">
         {/* Mobile header */}
         <header className="lg:hidden flex items-center gap-4 p-4 border-b border-border bg-card">
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             size="icon"
             onClick={() => setSidebarOpen(true)}
           >
@@ -27,7 +38,7 @@ export function MainLayout({ children }: MainLayoutProps) {
           </Button>
           <span className="font-semibold text-foreground">Training Hub</span>
         </header>
-        
+
         {/* Main content */}
         <main className={cn(
           "flex-1 overflow-y-auto transition-all duration-300"
