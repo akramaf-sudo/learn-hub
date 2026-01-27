@@ -31,7 +31,7 @@ export default function AdminActivity() {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedLog, setSelectedLog] = useState<ActivityLog | null>(null);
 
-    const { data: logs, isLoading } = useQuery({
+    const { data: logs, isLoading, error: dbError } = useQuery({
         queryKey: ["admin-activity-logs"],
         queryFn: async () => {
             const { data, error } = await supabase
@@ -39,10 +39,29 @@ export default function AdminActivity() {
                 .select("*")
                 .order("created_at", { ascending: false });
 
-            if (error) throw error;
+            if (error) {
+                console.error("Database Error:", error);
+                throw error;
+            }
             return (data as unknown) as ActivityLog[];
         },
     });
+
+    if (dbError) {
+        return (
+            <MainLayout>
+                <div className="p-8 text-center space-y-4">
+                    <div className="bg-destructive/10 p-6 rounded-lg inline-block">
+                        <h2 className="text-xl font-bold text-destructive">Database Connection Issue</h2>
+                        <p className="text-muted-foreground mt-2">{(dbError as any).message}</p>
+                        <p className="text-sm mt-4 font-mono bg-background p-2 rounded">
+                            Hint: Ensure you have run the activity_logs_setup.sql in Supabase.
+                        </p>
+                    </div>
+                </div>
+            </MainLayout>
+        );
+    }
 
     const filteredLogs = (logs || []).filter((log) =>
         log.user_phone?.toLowerCase().includes(searchTerm.toLowerCase()) ||
